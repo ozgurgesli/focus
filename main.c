@@ -29,7 +29,7 @@ void read_config() {
     interval_ms = GetPrivateProfileIntA("general", "interval_ms", 1000, ".\\focus.ini");
 }
 
-void mqtt_connect() {
+void mqtt_open_connection() {
     WSADATA wsa;
     WSAStartup(MAKEWORD(2,2), &wsa);
 
@@ -43,7 +43,12 @@ void mqtt_connect() {
 
     mqtt_init(&client, sock, sendbuf, BUF_SIZE, recvbuf, BUF_SIZE, NULL);
 
-    mqtt_connect(&client, "focus-client", NULL, NULL, 0, NULL, NULL, 0, 400);
+    mqtt_connect(&client,
+        "focus-client",
+        NULL, NULL, 0,
+        NULL, NULL,
+        0, 400
+    );
 }
 
 void mqtt_publish_state(const char *msg) {
@@ -52,7 +57,7 @@ void mqtt_publish_state(const char *msg) {
 
 int main() {
     read_config();
-    mqtt_connect();
+    mqtt_open_connection();
 
     char last_app[MAX_PATH] = "";
 
